@@ -1,0 +1,6 @@
+{
+  "name": "Gig Worker Companion",
+  "description": "Comprehensive empowerment dashboard for Indian gig delivery partners, drivers, and informal workers featuring Gemini AI advice, earnings tracking, welfare schemes, road safety, document guidance, and formal complaint drafting.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
