@@ -1,6 +1,8 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
+import type { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { GoogleGenAI } from '@google/genai';
 import { createServer as createViteServer } from 'vite';
@@ -296,16 +298,17 @@ Provide:
 
 // Setup Vite middleware in dev or static server in prod
 async function startServer() {
-  const isProd = process.env.NODE_ENV === 'production';
+  const isProd = process.env.NODE_ENV === 'production' || process.env.RENDER === 'true';
+  const distPath = path.resolve(__dirname, 'dist');
+  const hasDist = fs.existsSync(distPath);
 
-  if (!isProd) {
+  if (!isProd && !hasDist) {
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: 'spa',
     });
     app.use(vite.middlewares);
   } else {
-    const distPath = path.resolve(__dirname, 'dist');
     app.use(express.static(distPath));
     app.get('*', (_req: Request, res: Response) => {
       res.sendFile(path.resolve(distPath, 'index.html'));
@@ -313,7 +316,7 @@ async function startServer() {
   }
 
   app.listen(port, '0.0.0.0', () => {
-    console.log(`🚀 Gig Worker Companion running on http://0.0.0.0:${port}`);
+    console.log(`🚀 Gig Worker Companion running on port ${port} (mode: ${isProd || hasDist ? 'production' : 'development'})`);
   });
 }
 
